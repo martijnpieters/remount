@@ -1,4 +1,4 @@
-import { raf } from './utils'
+import { expect } from 'vitest'
 
 describe('Inception mode', () => {
   let div
@@ -36,8 +36,8 @@ describe('Inception mode', () => {
     const root = ReactDOM.createRoot(div)
     root.render(<Outer />)
 
-    return raf().then(() => {
-      expect(div.textContent).toEqual('OutsideInsideHello')
-    })
+    // The outer and inner React roots render in separate scheduler passes, so
+    // a fixed number of frames is not enough to be reliable.
+    return expect.poll(() => div.textContent).toEqual('OutsideInsideHello')
   })
 })

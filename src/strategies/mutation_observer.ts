@@ -28,11 +28,7 @@ export function isSupported(): boolean {
  *     )
  */
 
-export function defineElement(
-  elSpec: ElementSpec,
-  elName: string,
-  events: ElementEvents
-): void {
+export function defineElement(elSpec: ElementSpec, elName: string, events: ElementEvents): void {
   elName = elName.toLowerCase()
 
   // Maintain parity with what would happen in Custom Elements mode
@@ -50,9 +46,9 @@ export function defineElement(
     throw new Error(`Remount: "${elName}" is already registered`)
   }
 
-  const observer = new MutationObserver(mutations => {
-    each(mutations, mutation => {
-      each(mutation.addedNodes, node => {
+  const observer = new MutationObserver((mutations) => {
+    each(mutations, (mutation) => {
+      each(mutation.addedNodes, (node) => {
         if (isElement(node)) {
           checkForMount(node, elName, events)
         }
@@ -69,17 +65,14 @@ export function defineElement(
 
   function mountElementsInDOM(): void {
     const nodes = document.getElementsByTagName(elName)
-    each(nodes, node => {
+    each(nodes, (node) => {
       if (isElement(node)) {
         checkForMount(node, elName, events)
       }
     })
   }
 
-  if (
-    document.readyState === 'complete' ||
-    document.readyState === 'interactive'
-  ) {
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
     mountElementsInDOM()
   } else {
     window.addEventListener('DOMContentLoaded', mountElementsInDOM)
@@ -92,17 +85,13 @@ export function defineElement(
  *
  */
 
-function checkForMount(
-  node: HTMLElement,
-  elName: string,
-  events: ElementEvents
-): void {
+function checkForMount(node: HTMLElement, elName: string, events: ElementEvents): void {
   if (node.nodeName.toLowerCase() === elName) {
     events.onMount(node, node)
     observeForUpdates(node, events)
     observeForRemoval(node, events)
   } else if (node.children && node.children.length) {
-    each(node.children, subnode => {
+    each(node.children, (subnode) => {
       if (isElement(subnode)) {
         checkForMount(subnode, elName, events)
       }
@@ -116,8 +105,8 @@ function checkForMount(
 
 function observeForUpdates(node: Element, events: ElementEvents): void {
   const { onUpdate } = events
-  const observer = new MutationObserver(mutations => {
-    each(mutations, mutation => {
+  const observer = new MutationObserver((mutations) => {
+    each(mutations, (mutation) => {
       const targetNode = mutation.target
       if (isElement(targetNode)) {
         onUpdate(targetNode, targetNode)
@@ -140,9 +129,9 @@ function observeForRemoval(node: HTMLElement, events: ElementEvents): void {
     return
   }
 
-  const observer = new MutationObserver(mutations => {
-    each(mutations, mutation => {
-      each(mutation.removedNodes, subnode => {
+  const observer = new MutationObserver((mutations) => {
+    each(mutations, (mutation) => {
+      each(mutation.removedNodes, (subnode) => {
         if (node !== subnode) {
           return
         }

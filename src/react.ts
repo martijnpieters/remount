@@ -4,12 +4,7 @@ import type { ElementSpec } from './types'
 
 const roots = new Map<HTMLElement, ReactDOM.Root>()
 
-export function mount(
-  elSpec: ElementSpec,
-  mountPoint: HTMLElement,
-  props: {},
-  element: HTMLElement | null
-): void {
+export function mount(elSpec: ElementSpec, mountPoint: HTMLElement, props: {}): void {
   const reactElement = React.createElement(elSpec.component, props)
   const root = ReactDOM.createRoot(mountPoint)
   roots.set(mountPoint, root)
@@ -20,12 +15,7 @@ export function mount(
  * Updates a custom element by re-rendering its React root.
  */
 
-export function update(
-  elSpec: ElementSpec,
-  mountPoint: HTMLElement,
-  props: {},
-  element: HTMLElement | null
-): void {
+export function update(elSpec: ElementSpec, mountPoint: HTMLElement, props: {}): void {
   const reactElement = React.createElement(elSpec.component, props)
   const root = roots.get(mountPoint)
   if (root) root.render(reactElement)

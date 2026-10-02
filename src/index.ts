@@ -15,10 +15,7 @@ import type { Defaults, ElementMap } from './types'
  *     )
  */
 
-function defineReact(
-  components: ElementMap = {},
-  options: Defaults = {}
-): void {
+function defineReact(components: ElementMap = {}, options: Defaults = {}): void {
   return define(components, {
     adapter: ReactAdapter,
     ...options
@@ -27,11 +24,4 @@ function defineReact(
 
 export { defineReact as define, getStrategy }
 
-export type {
-  Adapter,
-  Component,
-  Defaults,
-  ElementMap,
-  ElementSpec,
-  Strategy
-} from './types'
+export type { Adapter, Component, Defaults, ElementMap, ElementSpec, Strategy } from './types'

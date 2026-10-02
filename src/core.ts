@@ -1,13 +1,6 @@
 import * as CustomElementsStrategy from './strategies/custom_elements'
 import * as MutationObserverStrategy from './strategies/mutation_observer'
-import type {
-  Component,
-  Defaults,
-  ElementMap,
-  ElementSpec,
-  PropertyMap,
-  Strategy
-} from './types'
+import type { Component, Defaults, ElementMap, ElementSpec, PropertyMap, Strategy } from './types'
 
 /**
  * Cache of the strategy determined by `getStrategy()`.
@@ -30,7 +23,7 @@ export function getStrategy(): Strategy | undefined {
   const StrategyUsed: Strategy | undefined = [
     CustomElementsStrategy,
     MutationObserverStrategy
-  ].find(strategy => !!strategy.isSupported())
+  ].find((strategy) => !!strategy.isSupported())
 
   if (!StrategyUsed) {
     console.warn(
@@ -65,11 +58,7 @@ export function define(components: ElementMap, defaults?: Defaults): void {
   }
 
   Object.keys(components).forEach((name: string) => {
-    const elSpec: ElementSpec = Object.assign(
-      {},
-      defaults,
-      toElementSpec(components[name])
-    )
+    const elSpec: ElementSpec = Object.assign({}, defaults, toElementSpec(components[name]))
 
     const adapter = elSpec.adapter
     if (!adapter) throw new Error('No suitable adapter found')
@@ -126,10 +115,7 @@ function isElementSpec(spec: ElementSpec | Component): spec is ElementSpec {
  *     // => { name: 'Romeo' }
  */
 
-function getProps(
-  element: HTMLElement,
-  attributes: string[] | null | undefined
-): PropertyMap {
+function getProps(element: HTMLElement, attributes: string[] | null | undefined): PropertyMap {
   const rawJson = element.getAttribute('props-json')
   if (rawJson) {
     return JSON.parse(rawJson)

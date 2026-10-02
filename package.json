@@ -1,11 +1,28 @@
 {
   "name": "remount",
-  "description": "Mount React components to the DOM using custom elements",
   "version": "1.0.0",
-  "author": "Rico Sta. Cruz <rstacruz@users.noreply.github.com>",
+  "description": "Mount React components to the DOM using custom elements",
+  "keywords": [
+    "custom element",
+    "mount",
+    "onmount",
+    "react",
+    "web component"
+  ],
+  "homepage": "https://github.com/rstacruz/remount#readme",
   "bugs": {
     "url": "https://github.com/rstacruz/remount/issues"
   },
+  "license": "MIT",
+  "author": "Rico Sta. Cruz <rstacruz@users.noreply.github.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rstacruz/remount.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -17,16 +34,24 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "yarn build"
+  },
   "devDependencies": {
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
     "@vitest/browser-playwright": "^5.0.3",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
     "playwright": "^1.63.0",
-    "prettier": "^1.15.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tsdown": "^0.23.0",
@@ -34,30 +59,8 @@
     "vite": "^8.3.2",
     "vitest": "^5.0.3"
   },
-  "homepage": "https://github.com/rstacruz/remount#readme",
-  "keywords": [
-    "custom element",
-    "mount",
-    "onmount",
-    "react",
-    "web component"
-  ],
-  "license": "MIT",
   "peerDependencies": {
     "react": ">= 18.0.0",
     "react-dom": ">= 18.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rstacruz/remount.git"
-  },
-  "scripts": {
-    "build": "tsdown",
-    "dev": "tsdown --watch",
-    "typecheck": "tsc",
-    "prettier": "prettier '*.js' 'src/**/*.ts'",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "prepare": "yarn build"
   }
 }

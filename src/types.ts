@@ -1,8 +1,6 @@
 import React from 'react'
 
-export type Component =
-  | React.ComponentClass<any, any>
-  | React.FunctionComponent<any>
+export type Component = React.ComponentClass<any, any> | React.FunctionComponent<any>
 
 export interface Adapter {
   mount: (
@@ -55,11 +53,7 @@ export interface ElementEvents {
 
 export interface Strategy {
   name: string
-  defineElement: (
-    elSpec: ElementSpec,
-    name: string,
-    events: ElementEvents
-  ) => void
+  defineElement: (elSpec: ElementSpec, name: string, events: ElementEvents) => void
   isSupported: () => boolean
   supportsShadow: () => boolean
 }

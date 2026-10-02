@@ -18,11 +18,7 @@ export const name = 'CustomElements'
  *     )
  */
 
-export function defineElement(
-  elSpec: ElementSpec,
-  elName: string,
-  events: ElementEvents
-): void {
+export function defineElement(elSpec: ElementSpec, elName: string, events: ElementEvents): void {
   const { onUpdate, onUnmount, onMount } = events
   const attributes = elSpec.attributes || []
 
@@ -69,10 +65,7 @@ export function isSupported(): boolean {
  * components. If `shadow: true` is requested, it'll attach a shadow node.
  */
 
-function createMountPoint(
-  element: HTMLElement,
-  elSpec: ElementSpec
-): HTMLElement {
+function createMountPoint(element: HTMLElement, elSpec: ElementSpec): HTMLElement {
   const { shadow } = elSpec
   if (shadow && element.attachShadow) {
     const mountPoint = document.createElement('span')

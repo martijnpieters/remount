@@ -1,4 +1,3 @@
-import { inject as enableBabelClasses } from '../helpers/babel_es5_adapter'
 import type { ElementEvents, ElementSpec } from '../types'
 
 export const name = 'CustomElements'
@@ -25,7 +24,6 @@ export function defineElement(
   events: ElementEvents
 ): void {
   const { onUpdate, onUnmount, onMount } = events
-  enableBabelClasses()
   const attributes = elSpec.attributes || []
 
   class ComponentElement extends HTMLElement {

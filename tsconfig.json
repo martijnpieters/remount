@@ -1,32 +1,16 @@
 {
   "compilerOptions": {
-    // Types should go into this directory.
-    // Removing this would place the .d.ts files
-    // next to the .js files
-    "outDir": "dist",
-    // Generate d.ts files
-    "declaration": true,
-    // This compiler run should
-    // only output d.ts files
-    "emitDeclarationOnly": true,
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "noEmit": true,
+    "target": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
-    "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "verbatimModuleSyntax": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

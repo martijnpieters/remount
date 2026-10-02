@@ -6,9 +6,7 @@
 
 Possible solutions:
 
-- Try adding custom-elements-es5-adapter
-
-- Disable class transforms in Babel
+- Disable class transforms in your transpiler (eg, Babel), or transpile `remount` to a target that supports native classes
 
 ## The `x-` prefix
 

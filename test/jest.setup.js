@@ -1,4 +1,4 @@
-import * as Remount from '../src/index.js'
+import * as Remount from '../src/index'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 

@@ -29,6 +29,7 @@ export interface ElementMap {
 }
 
 export interface Defaults {
+  adapter?: Adapter
   attributes?: string[]
   quiet?: boolean
   shadow?: boolean
@@ -66,8 +67,3 @@ export interface Strategy {
 export interface ObserverList {
   [key: string]: MutationObserver
 }
-
-export type Each =
-  | ((list: NodeList, fn: (item: Node) => any) => void)
-  | (<T extends Element>(list: HTMLCollectionOf<T>, fn: (item: T) => any) => void)
-  | ((list: HTMLCollection, fn: (item: HTMLElement) => any) => void)

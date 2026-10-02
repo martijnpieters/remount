@@ -1,19 +1,5 @@
-// @ts-check
-/** @typedef { import('../types').Adapter } Adapter */
-/** @typedef { import('../types').Component } Component */
-/** @typedef { import('../types').Defaults } Defaults */
-/** @typedef { import('../types').ElementMap } ElementMap */
-/** @typedef { import('../types').ElementSpec } ElementSpec */
-/** @typedef { import('../types').ElementEvents } ElementEvents */
-/** @typedef { import('../types').ReactAdapter } ReactAdapter */
-/** @typedef { import('../types').PropertyMap } PropertyMap */
-
 import { inject as enableBabelClasses } from '../helpers/babel_es5_adapter'
-
-/**
- * The name of this strategy.
- * @type string
- */
+import type { ElementEvents, ElementSpec } from '../types'
 
 export const name = 'CustomElements'
 
@@ -31,36 +17,37 @@ export const name = 'CustomElements'
  *       'x-tooltip',
  *       { onUpdate, onUnmount }
  *     )
- *
- * @private
- * @param {ElementSpec} elSpec
- * @param {string} elName
- * @param {ElementEvents} events
  */
 
-export function defineElement(elSpec, elName, events) {
+export function defineElement(
+  elSpec: ElementSpec,
+  elName: string,
+  events: ElementEvents
+): void {
   const { onUpdate, onUnmount, onMount } = events
   enableBabelClasses()
   const attributes = elSpec.attributes || []
 
   class ComponentElement extends HTMLElement {
-    static get observedAttributes() {
+    _mountPoint?: HTMLElement
+
+    static get observedAttributes(): string[] {
       return ['props-json', ...attributes]
     }
 
-    connectedCallback() {
+    connectedCallback(): void {
       this._mountPoint = createMountPoint(this, elSpec)
       onMount(this, this._mountPoint)
     }
 
-    disconnectedCallback() {
+    disconnectedCallback(): void {
       if (!this._mountPoint) {
         return
       }
       onUnmount(this, this._mountPoint)
     }
 
-    attributeChangedCallback() {
+    attributeChangedCallback(): void {
       if (!this._mountPoint) {
         return
       }
@@ -68,7 +55,6 @@ export function defineElement(elSpec, elName, events) {
     }
   }
 
-  // Supress warning when quiet mode is on
   if (elSpec.quiet && window.customElements.get(elName)) {
     return
   }
@@ -76,20 +62,19 @@ export function defineElement(elSpec, elName, events) {
   window.customElements.define(elName, ComponentElement)
 }
 
-export function isSupported() {
+export function isSupported(): boolean {
   return !!(window.customElements && window.customElements.define)
 }
 
 /**
  * Creates a `<span>` element that serves as the mounting point for React
  * components. If `shadow: true` is requested, it'll attach a shadow node.
- *
- * @private
- * @param {HTMLElement} element
- * @param {ElementSpec} elSpec
  */
 
-function createMountPoint(element, elSpec) {
+function createMountPoint(
+  element: HTMLElement,
+  elSpec: ElementSpec
+): HTMLElement {
   const { shadow } = elSpec
   if (shadow && element.attachShadow) {
     const mountPoint = document.createElement('span')
@@ -104,6 +89,6 @@ function createMountPoint(element, elSpec) {
  * Check if Shadow DOM is supported.
  */
 
-export function supportsShadow() {
+export function supportsShadow(): boolean {
   return !!(document && document.body && document.body.attachShadow)
 }

@@ -1,25 +1,15 @@
-// @ts-check
-/** @typedef { import('../types').ElementSpec } ElementSpec */
-/** @typedef { import('../types').ElementEvents } ElementEvents */
-/** @typedef { import('../types').ObserverList } ObserverList */
-
 import each from '../each'
-
-/**
- * The name of this strategy.
- * @type string
- */
+import type { ElementEvents, ElementSpec, ObserverList } from '../types'
 
 export const name = 'MutationObserver'
 
 /**
  * List of observers tags.
- * @type ObserverList
  */
 
-export const observers = {}
+export const observers: ObserverList = {}
 
-export function isSupported() {
+export function isSupported(): boolean {
   return 'MutationObserver' in window
 }
 
@@ -36,14 +26,13 @@ export function isSupported() {
  *         onUnmount: () => {},
  *       }
  *     )
- *
- * @private
- * @param {ElementSpec} elSpec
- * @param {string} elName
- * @param {ElementEvents} events
  */
 
-export function defineElement(elSpec, elName, events) {
+export function defineElement(
+  elSpec: ElementSpec,
+  elName: string,
+  events: ElementEvents
+): void {
   elName = elName.toLowerCase()
 
   // Maintain parity with what would happen in Custom Elements mode
@@ -61,30 +50,30 @@ export function defineElement(elSpec, elName, events) {
     throw new Error(`Remount: "${elName}" is already registered`)
   }
 
-  const observer = new MutationObserver(
-    /** @type MutationCallback */ mutations => {
-      each(mutations, (/** @type MutationRecord */ mutation) => {
-        each(mutation.addedNodes, (/** @type Node */ node) => {
-          if (isElement(node)) {
-            checkForMount(node, elName, events)
-          }
-        })
+  const observer = new MutationObserver(mutations => {
+    each(mutations, mutation => {
+      each(mutation.addedNodes, node => {
+        if (isElement(node)) {
+          checkForMount(node, elName, events)
+        }
       })
-    }
-  )
+    })
+  })
 
   observer.observe(document.body, {
     childList: true,
     subtree: true
   })
 
-  observers[elName] = /* true */ observer
+  observers[elName] = observer
 
-  function mountElementsInDOM() {
+  function mountElementsInDOM(): void {
     const nodes = document.getElementsByTagName(elName)
-    each(nodes, (/** @type HTMLElement */ node) =>
-      checkForMount(node, elName, events)
-    )
+    each(nodes, node => {
+      if (isElement(node)) {
+        checkForMount(node, elName, events)
+      }
+    })
   }
 
   if (
@@ -101,20 +90,19 @@ export function defineElement(elSpec, elName, events) {
  * Checks if this new element should fire an `onUpdate` hook.
  * Recurses down to its descendant nodes.
  *
- * @param {HTMLElement} node
- * @param {string} elName
- * @param {ElementEvents} events
  */
 
-function checkForMount(node, elName, events) {
+function checkForMount(
+  node: HTMLElement,
+  elName: string,
+  events: ElementEvents
+): void {
   if (node.nodeName.toLowerCase() === elName) {
-    // It's a match!
     events.onMount(node, node)
     observeForUpdates(node, events)
     observeForRemoval(node, events)
   } else if (node.children && node.children.length) {
-    // Recurse down into the other additions
-    each(node.children, (/** @type HTMLElement */ subnode) => {
+    each(node.children, subnode => {
       if (isElement(subnode)) {
         checkForMount(subnode, elName, events)
       }
@@ -124,58 +112,47 @@ function checkForMount(node, elName, events) {
 
 /**
  * Observes for any changes in attributes.
- *
- * @param {Element} node
- * @param {ElementEvents} events
  */
 
-function observeForUpdates(node, events) {
+function observeForUpdates(node: Element, events: ElementEvents): void {
   const { onUpdate } = events
-  const observer = new MutationObserver(
-    /** @type MutationCallback */ mutations => {
-      each(mutations, (/** @type MutationRecord */ mutation) => {
-        const targetNode = mutation.target
-        if (isElement(targetNode)) {
-          onUpdate(targetNode, targetNode)
-        }
-      })
-    }
-  )
+  const observer = new MutationObserver(mutations => {
+    each(mutations, mutation => {
+      const targetNode = mutation.target
+      if (isElement(targetNode)) {
+        onUpdate(targetNode, targetNode)
+      }
+    })
+  })
 
   observer.observe(node, { attributes: true })
 }
 
 /**
  * Observes a node's parent to wait until the node is removed
- * @param {HTMLElement} node
- * @param {ElementEvents} events
  */
 
-function observeForRemoval(node, events) {
+function observeForRemoval(node: HTMLElement, events: ElementEvents): void {
   const { onUnmount } = events
   const parent = node.parentNode
 
-  // Not sure when this can happen, but let's add this for type safety
   if (!parent) {
     return
   }
 
-  const observer = new MutationObserver(
-    /** @type MutationCallback */ mutations => {
-      each(mutations, (/** @type MutationRecord */ mutation) => {
-        each(mutation.removedNodes, (/** @type Node */ subnode) => {
-          if (node !== subnode) {
-            return
-          }
-          if (isElement(node)) {
-            // @ts-ignore TypeScript expects 0 arguments...?
-            observer.disconnect(parent)
-            onUnmount(node, node)
-          }
-        })
+  const observer = new MutationObserver(mutations => {
+    each(mutations, mutation => {
+      each(mutation.removedNodes, subnode => {
+        if (node !== subnode) {
+          return
+        }
+        if (isElement(node)) {
+          observer.disconnect()
+          onUnmount(node, node)
+        }
       })
-    }
-  )
+    })
+  })
 
   observer.observe(parent, { childList: true, subtree: true })
 }
@@ -187,19 +164,14 @@ function observeForRemoval(node, events) {
  * it'd be wise if we rejected element names that won't work in Custom Elements
  * mode (even if we're using MutationObserver mode).
  *
- * @param {string} elName
- * @returns {boolean}
- *
  * @example
  *     isValidName('div')      // => false
  *     isValidName('my-div')   // => true
  *     isValidName('123-456')  // => false
  *     isValidName('my-123')   // => true
- *
- * @private
  */
 
-function isValidName(elName) {
+function isValidName(elName: string): boolean {
   return !!(elName.indexOf('-') !== -1 && elName.match(/^[a-z][a-z0-9-]*$/))
 }
 
@@ -207,7 +179,7 @@ function isValidName(elName) {
  * Shadow DOM is not supported with the Mutation Observer strategy.
  */
 
-export function supportsShadow() {
+export function supportsShadow(): boolean {
   return false
 }
 
@@ -216,14 +188,8 @@ export function supportsShadow() {
  *
  * It's possible that a mutation's `addedNodes` return something that isn't an
  * HTMLElement.
- *
- * @param {any} node
- * @returns {node is HTMLElement}
  */
 
-function isElement(node) {
-  if (node) {
-    return true
-  }
-  return false
+function isElement(node: Node | null | undefined): node is HTMLElement {
+  return !!node && node.nodeType === 1
 }

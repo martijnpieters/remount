@@ -1,49 +1,31 @@
 # Builds
 
-Remount comes in 2 flavors:
-
-| Version       | Description                          |
-| ------------- | ------------------------------------ |
-| `remount`     | ES Modules build (default)           |
-| `remount/es5` | UMD CommonJS build (legacy browsers) |
-
-## Using builds
-
-If you'd like to use an alternate build, you can import from it like so:
+Remount ships a single ES Module build (`dist/index.js`) with TypeScript declarations (`dist/index.d.ts`). React and ReactDOM are peer dependencies and are not bundled.
 
 ```js
-import { define } from 'remount/es5'
-```
-
-Or if you're using Webpack:
-
-```js
-/* webpack.config.js */
-module.exports = {
-  /* ... */
-  resolve: {
-    alias: {
-      remount: 'remount/es5'
-    }
-  }
-}
+import { define } from 'remount'
 ```
 
 ## Using in browser
 
-When used like so, Remount will be available as `window.Remount`. Great for using in JSFiddle/Codepen.
+Load Remount as a native ES module, using an import map to resolve React. Great for JSFiddle/Codepen. See the [examples](../examples) directory.
 
-```js
-<script src='https://cdn.jsdelivr.net/npm/remount/dist/remount.es5.js' />
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18",
+      "react-dom/client": "https://esm.sh/react-dom@18/client"
+    }
+  }
+</script>
+<script type="module">
+  import { define } from 'https://esm.sh/remount'
+</script>
 ```
 
-## remount/es5 tradeoffs
+## Removed builds
 
-The ES5 build (`remount/es5`) transpiles with some legacy workarounds. It's provided for a few reasons:
-
-- Support for legacy browsers (IE9, 2011)
-- Support for build tools that don't work with modern JavaScript (eg, UglifyJS)
-
-## Deprecated builds
+The ES5/UMD build (`remount/es5`, `dist/remount.es5.js`) was removed in v2. If your build tool can't handle modern JavaScript, transpile `remount` as part of your own build.
 
 The `remount/es6` and `remount/esm` builds were deprecated in v0.10.

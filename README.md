@@ -95,7 +95,7 @@ Custom Elements API<sup>[#][custom-elements]</sup> ("Web Components") will be us
 ## Documentation
 
 - [API documentation](./docs/api.md)
-- [Builds](./docs/builds.md) &mdash; ES2015+ and ES Module builds are also provided.
+- [Builds](./docs/builds.md) &mdash; Remount is distributed as an ES Module.
 - [FAQ and Troubleshooting](./docs/faq.md) &mdash; Start here if you find any issues.
 - [Comparison with alternatives](./docs/comparison.md)
 - [Browser support](./docs/browser_support.md)

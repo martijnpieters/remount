@@ -2,16 +2,25 @@
 <html>
 <head>
 <meta charset='utf-8'>
-<script crossorigin src='https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.0.4/custom-elements-es5-adapter.js'></script>
-<script crossorigin src='https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.0.4/webcomponents-loader.js'></script>
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src='../dist/remount.es5.js'></script>
+<script type='importmap'>
+{
+  "imports": {
+    "react": "https://esm.sh/react@18",
+    "react-dom/client": "https://esm.sh/react-dom@18/client"
+  }
+}
+</script>
+<script type='module'>
+  import * as Remount from '../dist/index.js'
+  import React from 'react'
+  window.Remount = Remount
+  window.React = React
+</script>
 </head>
 <body>
   <h1>Web components test</h1>
   <x-app></x-app>
-  <script>
+  <script type='module'>
     const h = React.createElement
     const Greeter = ({ name }) => {
       return h('div', { style: { border: 'solid 1px #ccc' } }, 'Oh hello, ', name, '!')

@@ -1,21 +1,19 @@
-// @ts-check
-/** @typedef { import('./types').Adapter } Adapter */
-/** @typedef { import('./types').Component } Component */
-/** @typedef { import('./types').Defaults } Defaults */
-/** @typedef { import('./types').ElementMap } ElementMap */
-/** @typedef { import('./types').ElementSpec } ElementSpec */
-/** @typedef { import('./types').PropertyMap } PropertyMap */
-/** @typedef { import('./types').Strategy } Strategy */
-
 import * as CustomElementsStrategy from './strategies/custom_elements'
 import * as MutationObserverStrategy from './strategies/mutation_observer'
+import type {
+  Component,
+  Defaults,
+  ElementMap,
+  ElementSpec,
+  PropertyMap,
+  Strategy
+} from './types'
 
 /**
  * Cache of the strategy determined by `getStrategy()`.
- * @type {Strategy | null | undefined}
  */
 
-let cachedStrategy
+let cachedStrategy: Strategy | undefined
 
 /**
  * Detect what API can be used.
@@ -24,14 +22,15 @@ let cachedStrategy
  *     Remount.getStrategy().name
  */
 
-export function getStrategy() {
+export function getStrategy(): Strategy | undefined {
   if (cachedStrategy) {
     return cachedStrategy
   }
 
-  const StrategyUsed = [CustomElementsStrategy, MutationObserverStrategy].find(
-    strategy => !!strategy.isSupported()
-  )
+  const StrategyUsed: Strategy | undefined = [
+    CustomElementsStrategy,
+    MutationObserverStrategy
+  ].find(strategy => !!strategy.isSupported())
 
   if (!StrategyUsed) {
     console.warn(
@@ -48,8 +47,6 @@ export function getStrategy() {
 
 /**
  * Registers custom elements and links them to React components.
- * @param {ElementMap} components
- * @param {Defaults=} defaults
  *
  * @example
  *     define({ 'x-tooltip': Tooltip })
@@ -61,23 +58,22 @@ export function getStrategy() {
  *     )
  */
 
-export function define(components, defaults) {
+export function define(components: ElementMap, defaults?: Defaults): void {
   const Strategy = getStrategy()
   if (!Strategy) {
     return
   }
 
-  Object.keys(components).forEach((/** @type string */ name) => {
-    // Construct the specs for the element.
-    // (eg, { component: Tooltip, attributes: ['title'] })
-    /** @type ElementSpec */
-    const elSpec = Object.assign({}, defaults, toElementSpec(components[name]))
+  Object.keys(components).forEach((name: string) => {
+    const elSpec: ElementSpec = Object.assign(
+      {},
+      defaults,
+      toElementSpec(components[name])
+    )
 
-    /** @type Adapter | null | undefined */
     const adapter = elSpec.adapter
     if (!adapter) throw new Error('No suitable adapter found')
 
-    // Define a custom element.
     Strategy.defineElement(elSpec, name, {
       onMount(element, mountPoint) {
         const props = getProps(element, elSpec.attributes)
@@ -103,10 +99,6 @@ export function define(components, defaults) {
 /**
  * Coerces something into an `ElementSpec` type.
  *
- * @param {ElementSpec | Component} thing
- * @returns {ElementSpec}
- * @private
- *
  * @example
  *     toElementSpec(Tooltip)
  *     // => { component: Tooltip }
@@ -115,47 +107,36 @@ export function define(components, defaults) {
  *     // => { component: Tooltip }
  */
 
-function toElementSpec(thing) {
+function toElementSpec(thing: ElementSpec | Component): ElementSpec {
   if (isElementSpec(thing)) {
     return thing
   }
   return { component: thing }
 }
 
-/**
- * Checks if a given `spec` is an ElementSpec.
- *
- * @param {any} spec
- * @returns {spec is ElementSpec}
- */
-
-function isElementSpec(spec) {
-  return typeof spec === 'object' && spec.component
+function isElementSpec(spec: ElementSpec | Component): spec is ElementSpec {
+  return typeof spec === 'object' && !!(spec as ElementSpec).component
 }
 
 /**
  * Returns properties for a given HTML element.
- *
- * @private
- * @param {HTMLElement} element
- * @param {string[] | null | undefined} attributes
  *
  * @example
  *     getProps(div, ['name'])
  *     // => { name: 'Romeo' }
  */
 
-function getProps(element, attributes) {
+function getProps(
+  element: HTMLElement,
+  attributes: string[] | null | undefined
+): PropertyMap {
   const rawJson = element.getAttribute('props-json')
   if (rawJson) {
     return JSON.parse(rawJson)
   }
 
   const names = attributes || []
-  return names.reduce((
-    /** @type PropertyMap */ result,
-    /** @type string */ attribute
-  ) => {
+  return names.reduce((result: PropertyMap, attribute: string) => {
     result[attribute] = element.getAttribute(attribute)
     return result
   }, {})

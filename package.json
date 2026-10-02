@@ -72,7 +72,7 @@
   "scripts": {
     "build": "rollup --config",
     "postbuild": "run-s tsc",
-    "prettier": "prettier '*.js' 'src/**/*.{js,ts}'",
+    "prettier": "prettier '*.js' 'src/**/*.ts'",
     "tsc": "tsc",
     "jest": "jest",
     "prepare": "run-s build",

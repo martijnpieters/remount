@@ -12,10 +12,24 @@ const IS_WATCH = process.argv.includes('--watch')
 const MINIFY = terser()
 
 // Modern builds will not bundle dependencies
-const PLUGINS = [resolve({ browser: true }), commonjs()]
+const EXTENSIONS = ['.js', '.ts']
+const PLUGINS = [
+  resolve({ browser: true, extensions: EXTENSIONS }),
+  commonjs(),
+  // Strips types only; the ES5 builds additionally run the main Babel config
+  babel({
+    babelrc: false,
+    configFile: false,
+    extensions: EXTENSIONS,
+    babelHelpers: 'bundled',
+    exclude: 'node_modules/**',
+    presets: ['@babel/preset-typescript']
+  })
+]
 
 const BABEL = babel({
   exclude: 'node_modules/**',
+  extensions: EXTENSIONS,
   babelHelpers: 'bundled'
 })
 

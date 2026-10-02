@@ -1,11 +1,10 @@
-/** @jest-environment jsdom */
 import { raf } from './utils'
 
 const Greeter = ({ name }) => {
   return <span className='greeter'>Hello {name || '(unknown)'}!</span>
 }
 
-const Dumper = props => {
+const Dumper = (props) => {
   return <span className='dumper'>[{JSON.stringify(props)}]</span>
 }
 
@@ -224,9 +223,7 @@ describe('Remount', () => {
   })
 
   // Shadow DOM isn't always available
-  const hasShadow =
-    Remount.getStrategy().name === 'CustomElements' &&
-    document.body.attachShadow
+  const hasShadow = Remount.getStrategy().name === 'CustomElements' && document.body.attachShadow
 
   ;(hasShadow ? describe : describe.skip)('Shadow DOM mode', () => {
     it('will not be seen by .textContent', () => {
@@ -243,10 +240,10 @@ describe('Remount', () => {
       let unmounted
 
       class Removable extends React.Component {
-        componentWillUnmount () {
+        componentWillUnmount() {
           unmounted = true
         }
-        render () {
+        render() {
           return <span>Hola</span>
         }
       }

@@ -1,4 +1,3 @@
-/** @jest-environment jsdom */
 import { raf } from './utils'
 
 describe('Custom adapters', () => {
@@ -18,13 +17,13 @@ describe('Custom adapters', () => {
   beforeEach(() => {
     calls = []
     MyCustomAdapter = {
-      mount (a, b) {
+      mount(a, b) {
         calls.push({ method: 'mount', args: [a, b] })
       },
-      update (a, b) {
+      update(a, b) {
         calls.push({ method: 'update', args: [a, b] })
       },
-      unmount (a, b, c) {
+      unmount(a, b, c) {
         calls.push({ method: 'unmount', args: [a, b, c] })
       }
     }
@@ -65,10 +64,7 @@ describe('Custom adapters', () => {
   })
 
   it('calls unmount()', () => {
-    Remount.define(
-      { 'x-raspberry': 'MyComponent' },
-      { adapter: MyCustomAdapter }
-    )
+    Remount.define({ 'x-raspberry': 'MyComponent' }, { adapter: MyCustomAdapter })
 
     const el = document.createElement('x-raspberry')
     div.appendChild(el)
@@ -101,28 +97,24 @@ describe('Example vanilla adapter', () => {
 
   // A simple adapter that delegates to the component
   const VanillaAdapter = {
-    mount (spec, el, props) {
+    mount(spec, el, props) {
       spec.component.mount(spec, el, props)
     },
-    update (spec, el, props) {
+    update(spec, el, props) {
       spec.component.update(spec, el, props)
     },
-    unmount (spec, el) {
+    unmount(spec, el) {
       spec.component.unmount(spec, el)
     }
   }
 
   it('calls update()', () => {
     const MyComponent = {
-      mount (_, el) {
+      mount(_, el) {
         el.innerHTML = 'Hey :)'
       },
-      update (_, el) {
-        // pass
-      },
-      unmount (_, el) {
-        // pass
-      }
+      update() {},
+      unmount() {}
     }
 
     Remount.define({ 'x-chocolate': MyComponent }, { adapter: VanillaAdapter })

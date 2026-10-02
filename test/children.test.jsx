@@ -38,8 +38,7 @@ describe('Children', () => {
   })
 
   describe('without cleanups', () => {
-    // Skip this in IE10 and other weird environments
-    ;(window.LEGACY ? it.skip : it)('can be forced via innerHTML', () => {
+    it('can be forced via innerHTML', () => {
       const el = document.createElement('x-indigo')
       el.setAttribute('value', 'abc')
 

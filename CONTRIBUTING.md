@@ -3,17 +3,10 @@
 ## Running tests
 
 ```sh
-yarn test   # Run tests in CLI
-
-yarn watch # Run tests in browser
+yarn playwright install  # One-time: download the test browser
+yarn test                # Run tests once, in headless Chromium
+yarn test:watch          # Run tests in watch mode
 ```
-
-For doing `yarn watch`, these URL's will be available:
-
-- <http://localhost:10049/> - Tests
-- <http://localhost:10049/?polyfill> - Tests + enable CustomElements polyfill
-- <http://localhost:10049/?debug> - Tests + Debug mode
-- <http://localhost:10049/?polyfill,debug> - Both
 
 ## Contacting me
 

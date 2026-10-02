@@ -1,4 +1,3 @@
-/** @jest-environment jsdom */
 import { raf } from './utils'
 
 describe('Inception mode', () => {

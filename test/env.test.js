@@ -1,6 +1,4 @@
-/** @jest-environment jsdom */
 const strat = Remount.getStrategy()
-const name = Remount.getStrategy().name
 
 describe('Remount strategy: ' + strat.name, () => {
   if (strat.name === 'MutationObserver') {

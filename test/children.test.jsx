@@ -1,7 +1,6 @@
-/** @jest-environment jsdom */
 import { raf } from './utils'
 
-const Dumper = props => {
+const Dumper = (props) => {
   return <span className='dumper'>[{JSON.stringify(props)}]</span>
 }
 

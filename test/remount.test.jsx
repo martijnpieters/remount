@@ -222,10 +222,7 @@ describe('Remount', () => {
     })
   })
 
-  // Shadow DOM isn't always available
-  const hasShadow = Remount.getStrategy().name === 'CustomElements' && document.body.attachShadow
-
-  ;(hasShadow ? describe : describe.skip)('Shadow DOM mode', () => {
+  describe('Shadow DOM mode', () => {
     it('will not be seen by .textContent', () => {
       Remount.define({ 'x-grape': Greeter }, { shadow: true })
       div.innerHTML = `Grape: <x-grape></x-grape>`

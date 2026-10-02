@@ -222,7 +222,8 @@ describe('Remount', () => {
     })
   })
 
-  describe('Shadow DOM mode', () => {
+  // Shadow DOM isn't supported with the MutationObserver strategy
+  ;(Remount.getStrategy().supportsShadow() ? describe : describe.skip)('Shadow DOM mode', () => {
     it('will not be seen by .textContent', () => {
       Remount.define({ 'x-grape': Greeter }, { shadow: true })
       div.innerHTML = `Grape: <x-grape></x-grape>`
